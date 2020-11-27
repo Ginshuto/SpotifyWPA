@@ -28,11 +28,16 @@ const LoginLink = styled.a`
 `
 
 const Login = () => {
+  let redirect_URI = ''
   const dispatch = useDispatch()
   let history = useHistory()
   const internet = navigator.onLine
   const client_ID = '12ebc58d644148119c27df63ef38fc7d'
-  const redirect_URI = window.location.origin
+  if (window.location.protocol == 'http:') {
+    redirect_URI = window.location.origin
+  } else {
+    redirect_URI = window.location.href
+  }
   const scopes =
     'user-read-private user-read-email playlist-modify playlist-modify-public user-library-read playlist-modify-private'
   const authorizeURL =
