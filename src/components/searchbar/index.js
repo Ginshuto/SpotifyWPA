@@ -2,18 +2,21 @@ import React, { useState } from 'react'
 import SearchBarResults from '../searchbarresults'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
+import { useSelector } from 'react-redux'
 
 const InputDiv = styled.div`
   display: flex;
   justify-content: center;
 `
 
+const mapState = state => ({ token: state.token })
+
 const SearchBar = props => {
+  const { token } = useSelector(mapState)
   const [inputValue, setInputValue] = useState('')
   const [tracks, setTracks] = useState(null)
 
   function searchTrack(trackName) {
-    var token = localStorage.getItem('token')
     var myHeaders = new Headers()
     myHeaders.append('Content-Type', 'application/json')
     myHeaders.append('Accept', 'application/json')

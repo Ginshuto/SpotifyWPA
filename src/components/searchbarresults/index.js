@@ -1,16 +1,21 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { useSelector } from 'react-redux'
+
+const mapState = state => ({
+  token: state.token,
+  playlistID: state.playlistID,
+  playlistName: state.playlistName
+})
 
 const SearchBarResults = props => {
+  const { token, playlistID, playlistName } = useSelector(mapState)
   function addTrack(uri) {
     if (
       window.confirm(
-        `Êtes-vous sûr de vouloir ajouter ce morceau à la playlist ?`
+        `Êtes-vous sûr de vouloir ajouter ce morceau à la playlist ${playlistName} ?`
       )
     ) {
-      const playlistID = localStorage.getItem('playlistID')
-      const token = localStorage.getItem('token')
-      const userID = localStorage.getItem('userID')
       const myHeaders = new Headers()
       myHeaders.append('Content-Type', 'application/json')
       myHeaders.append('Accept', 'application/json')
@@ -22,7 +27,7 @@ const SearchBarResults = props => {
         body: JSON.stringify({})
       }
       fetch(
-        `https://api.spotify.com/v1/users/${userID}/playlists/${playlistID}/tracks?uris=${uri}`,
+        `https://api.spotify.com/v1/playlists/${playlistID}/tracks?uris=${uri}`,
         requestOptions
       )
         .then(res => res.json())
@@ -36,9 +41,7 @@ const SearchBarResults = props => {
       <ul>
         {props.data.tracks.items.map((element, index) => (
           <li
-            title={`Cliquez pour ajouter à la playlist ${localStorage.getItem(
-              'playlistName'
-            )}`}
+            title={`Cliquez pour ajouter à la playlist ${playlistName}`}
             key={index}
             onClick={() => addTrack(element.uri)}
           >

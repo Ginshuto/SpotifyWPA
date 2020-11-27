@@ -4,29 +4,18 @@ import Login from '../screens/Login'
 import Playlists from '../screens/Playlists'
 import PlaylistTracks from '../screens/PlaylistTracks'
 import Header from '../components/header'
-import PropTypes from 'prop-types'
 
-const RouterConfig = props => {
+const RouterConfig = () => {
   return (
     <Router>
-      <Header
-        setTheme={props.setTheme}
-        token={props.token}
-        setToken={props.setToken}
-      />
+      <Header />
       <Switch>
         <Route exact path='/playlists' component={Playlists} />
         <Route path='/playlists/:id' component={PlaylistTracks} />
-        <Route path='/' component={() => <Login setToken={props.setToken} />} />
+        <Route path='/' component={Login} />
       </Switch>
     </Router>
   )
-}
-
-RouterConfig.propTypes = {
-  setTheme: PropTypes.func.isRequired,
-  token: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
-  setToken: PropTypes.func.isRequired
 }
 
 export default RouterConfig

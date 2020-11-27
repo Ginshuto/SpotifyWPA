@@ -1,6 +1,7 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { useHistory } from 'react-router-dom'
-import PropTypes from 'prop-types'
+import { useSelector, useDispatch } from 'react-redux'
+import actions from '../../store/action'
 import styled from 'styled-components'
 
 const HeaderDiv = styled.header`
@@ -9,43 +10,48 @@ const HeaderDiv = styled.header`
   justify-content: space-between;
 `
 
-const Header = props => {
+const mapState = state => ({ token: state.token, theme: state.theme })
+
+const Header = () => {
+  const { token, theme } = useSelector(mapState)
+  const dispatch = useDispatch()
   const history = useHistory()
   const toggleTheme = () => {
-    console.log(localStorage.getItem('theme'))
-    if (localStorage.getItem('theme') === 'light') {
-      props.setTheme('dark')
+    if (theme === 'light') {
+      dispatch({
+        type: actions.SET_THEME,
+        value: 'dark'
+      })
     } else {
-      props.setTheme('light')
+      dispatch({
+        type: actions.SET_THEME,
+        value: 'light'
+      })
     }
   }
 
-  useEffect(() => {
-    props.setToken(localStorage.getItem('token'))
-  }, [history.location.pathname])
-
   const disconnect = () => {
-    localStorage.removeItem('token')
-    props.setToken(false)
+    dispatch({
+      type: actions.SET_TOKEN,
+      value: null
+    })
+    dispatch({
+      type: actions.SET_PLAYLIST_NAME,
+      value: null
+    })
+    dispatch({
+      type: actions.SET_PLAYLIST_ID,
+      value: null
+    })
     history.push('/')
   }
 
   return (
     <HeaderDiv>
       <button onClick={() => toggleTheme()}>Changer de thème</button>
-      {props.token ? (
-        <button onClick={disconnect}>Déconnexion</button>
-      ) : (
-        <div></div>
-      )}
+      {token ? <button onClick={disconnect}>Déconnexion</button> : <div></div>}
     </HeaderDiv>
   )
-}
-
-Header.propTypes = {
-  setTheme: PropTypes.func.isRequired,
-  token: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
-  setToken: PropTypes.func.isRequired
 }
 
 export default Header

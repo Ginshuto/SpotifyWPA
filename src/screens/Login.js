@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import styled from 'styled-components'
-import PropTypes from 'prop-types'
+import { useDispatch } from 'react-redux'
+import actions from '../store/action'
 
 const LoginContainer = styled.div`
   display: flex;
@@ -26,7 +27,8 @@ const LoginLink = styled.a`
   border-radius: 50px;
 `
 
-const Login = props => {
+const Login = () => {
+  const dispatch = useDispatch()
   let history = useHistory()
   const internet = navigator.onLine
   const client_ID = '12ebc58d644148119c27df63ef38fc7d'
@@ -43,14 +45,16 @@ const Login = props => {
 
   useEffect(() => {
     if (window.location.hash !== '') {
-      localStorage.setItem(
-        'token',
-        window.location.hash.match(/access_token=([^&]*)/)[1]
-      )
-      props.setToken(localStorage.getItem('token'))
+      dispatch({
+        type: actions.SET_TOKEN,
+        value: window.location.hash.match(/access_token=([^&]*)/)[1]
+      })
       history.push('/playlists')
     } else {
-      localStorage.removeItem('token')
+      dispatch({
+        type: actions.SET_TOKEN,
+        value: null
+      })
     }
   }, [])
 
@@ -67,10 +71,6 @@ const Login = props => {
       )}
     </LoginContainer>
   )
-}
-
-Login.propTypes = {
-  setToken: PropTypes.func.isRequired
 }
 
 export default Login
